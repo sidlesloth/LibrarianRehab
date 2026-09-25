@@ -18,7 +18,7 @@ class Act:
         self.motivating_utterances = ['keep on going', 'you are doing great. I see it', 'only a few left', 'that is awesome', 'you have almost finished the exercise']
         # Handles balloon inflation and reset after explosion
 
-    def provide_feedback(self, decision, frame, joints):
+    def provide_feedback(self, session, decision, frame, joints):
         """
         Displays the skeleton and some text using open cve.
 
@@ -36,23 +36,42 @@ class Act:
                 drawing_styles.get_default_hand_landmarks_style(),
             )
 
+        elif joints.pose_landmarks:
+            drawing_utils.draw_landmarks(
+                frame,
+                joints.pose_landmarks[0],
+                vision.PoseLandmarksConnections.POSE_LANDMARKS,
+                drawing_styles.get_default_pose_landmarks_style(),
+            )
 
+
+        if session == 'ex1':    
+            if decision == "squish":
+                text = "Great! Squish as much as you can, then release"
+            elif decision == "stretch":
+                text = "Fantastic! Keep Stretching!"
+        
+        elif session == 'ex2':
+            if decision == "squish":
+                text = "Great! Squish as much as you can, then release"
+            elif decision == "stretch":
+                text = "Keep Stretching!"
+        
+        elif session == 'end':
+            text = 'Great job today! Press X to exit'
+
+        self.display_text(frame, text)
+
+        
+    def display_text(self, frame, text):
         # Set the position, font, size, color, and thickness for the text
         font = cv2.FONT_HERSHEY_SIMPLEX
         font_scale = .9
         font_color = (0, 0, 0)  # White color in BGR
         thickness = 2
-
-        if decision == "squish":
-            text = "Keep Squishing!"
-        elif decision == "stretch":
-            text = "Keep Stretching!"
-
         # Define the position for the number and text
         text_position = (50, 50)
 
         # Draw the text on the image
         cv2.putText(frame, text, text_position, font, font_scale, font_color, thickness)
-
-        # Display the frame (for debugging purposes)
-        cv2.imshow('Sport Coaching Program', frame)
+        

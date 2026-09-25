@@ -5,6 +5,7 @@ from transitions import Machine
 
 class Think(object):
 
+    session =['start', 'ex1', 'break', 'ex2', 'end']
     def __init__(self, act_component):
         """
         Initializes the state machine and sets up the transition logic.
@@ -13,7 +14,7 @@ class Think(object):
         :param extension_threshold: threshold for entering the extension state
         """
 
-
+        self.session = 'start'
         # Define initial state and thresholds for transitions
         self.state = 'stretch'  # Initial state
         self.previous_state = self.state
@@ -76,5 +77,7 @@ class Think(object):
 
     def increment_squish(self):
         self.stretch_to_squish_count+=1;
+        if self.stretch_to_squish_count == 5: self.session = 'break';
     def increment_stretch(self):
         self.squish_to_stretch_count+=1;
+        if self.stretch_to_squish_count == 5: self.session = 'break';

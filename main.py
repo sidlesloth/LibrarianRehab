@@ -17,13 +17,13 @@ def main():
     """
     
     # Initialize the components: Sense for input, Think for decision-making, Act for output
-    sense = Sense.Sense()
+    
     act = Act.Act()
     think = Think.Think(act)
+    sense = Sense.Sense(session='')# main obj
+    sense1 = Sense.Sense(session='ex1') #obj for hand model
+    sense2 = Sense.Sense(session='ex2') #obj for pose model
 
-
-    # Search and print available camera devices (may take a while to complete)
-    #searchValidCameraIndexes()
     
     # Initialize the webcam capture
     cap = cv2.VideoCapture(0)  # Use the default camera (0) or change to a different index if multiple cameras are connected to system
@@ -39,37 +39,55 @@ def main():
             print("Failed to grab frame")
             break
 
+
+        if think.session == 'start':
+            act.display_text(frame, "Welcome! Press S to start!")
+            if cv2.waitKey(10) & 0xFF == ord('s'):
+                think.session='ex1'
+
+        if(think.session == 'ex1'):
+            sense=sense1
+        elif(think.session == 'ex2'):
+            sense=sense2
+
+        landmarks = None
         # Sense: Detect joints
         joints = sense.detect_joints(frame)
-        landmarks = joints.hand_landmarks[0] if joints.hand_landmarks else None
-
+        if think.session == 'ex1':
+            landmarks = joints.hand_landmarks[0] if joints.hand_landmarks else None
+        elif think.session == 'ex2':
+            landmarks = joints.pose_landmarks[0] if joints.pose_landmarks else None
+        
+        
+        
         # If landmarks are detected, calculate
         if landmarks:
-            # Extract joint coordinates for the left arm
-            # For this example, we will use specific landmark indexes for shoulder, elbow, and wrist
+            # for ex1, we extract middle of each finger as well as tip, plus wrist and thumb tip
             
             jointslist = []
-            wrist = sense.extract_joint_coordinates(landmarks, 'wrist'); jointslist.append(wrist) #index 0 
+            session = think.session
+            wrist = sense.extract_joint_coordinates(session, landmarks, 'wrist'); jointslist.append(wrist) #index 0 
 
-            thumbtip = sense.extract_joint_coordinates(landmarks, 'thumb_tip'); jointslist.append(thumbtip) #index 1
+            thumbtip = sense.extract_joint_coordinates(session, landmarks, 'thumb_tip'); jointslist.append(thumbtip) #index 1
 
-            indextip = sense.extract_joint_coordinates(landmarks, 'index_finger_tip'); jointslist.append(indextip) #2
-            indexmid = sense.extract_joint_coordinates(landmarks, 'index_finger_pip'); jointslist.append(indexmid) #3
-            middletip = sense.extract_joint_coordinates(landmarks, 'middle_finger_tip'); jointslist.append(middletip) #4
-            middlemid = sense.extract_joint_coordinates(landmarks, 'middle_finger_pip'); jointslist.append(middlemid) #5
-            ringtip = sense.extract_joint_coordinates(landmarks, 'ring_finger_tip'); jointslist.append(ringtip) #6
-            ringmid = sense.extract_joint_coordinates(landmarks, 'ring_finger_pip'); jointslist.append(ringmid) #7
-            pinkytip = sense.extract_joint_coordinates(landmarks, 'pinky_tip'); jointslist.append(pinkytip) #8
-            pinkymid = sense.extract_joint_coordinates(landmarks, 'pinky_pip'); jointslist.append(pinkymid) #9
+            indextip = sense.extract_joint_coordinates(session, landmarks, 'index_finger_tip'); jointslist.append(indextip) #2
+            indexmid = sense.extract_joint_coordinates(session, landmarks, 'index_finger_pip'); jointslist.append(indexmid) #3
+            middletip = sense.extract_joint_coordinates(session, landmarks, 'middle_finger_tip'); jointslist.append(middletip) #4
+            middlemid = sense.extract_joint_coordinates(session, landmarks, 'middle_finger_pip'); jointslist.append(middlemid) #5
+            ringtip = sense.extract_joint_coordinates(session, landmarks, 'ring_finger_tip'); jointslist.append(ringtip) #6
+            ringmid = sense.extract_joint_coordinates(session, landmarks, 'ring_finger_pip'); jointslist.append(ringmid) #7
+            pinkytip = sense.extract_joint_coordinates(session, landmarks, 'pinky_tip'); jointslist.append(pinkytip) #8
+            pinkymid = sense.extract_joint_coordinates(session, landmarks, 'pinky_pip'); jointslist.append(pinkymid) #9
 
 
             think.update_state(jointslist)
             decision = think.state
 
             # Act: Provide feedback to the user.
-            act.provide_feedback(decision, frame=frame, joints=joints)
+            act.provide_feedback(session, decision, frame=frame, joints=joints)
             
-
+        cv2.imshow('Librarian Rehab', frame)
+                 
         # Exit if the 'q' key is pressed
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
