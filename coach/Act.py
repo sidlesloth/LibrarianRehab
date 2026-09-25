@@ -28,7 +28,7 @@ class Act:
 
         """
 
-        if joints.hand_landmarks:
+        if (session =='ex1'):
             drawing_utils.draw_landmarks(
                 frame,
                 joints.hand_landmarks[0],
@@ -36,14 +36,13 @@ class Act:
                 drawing_styles.get_default_hand_landmarks_style(),
             )
 
-        elif joints.pose_landmarks:
+        elif session=='ex2':
             drawing_utils.draw_landmarks(
                 frame,
                 joints.pose_landmarks[0],
                 vision.PoseLandmarksConnections.POSE_LANDMARKS,
                 drawing_styles.get_default_pose_landmarks_style(),
             )
-
 
         if session == 'ex1':    
             if decision == "squish":
