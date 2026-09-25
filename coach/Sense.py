@@ -85,56 +85,29 @@ class Sense:
         - A tuple of (x, y) coordinates of the specified joint
         """
         joint_index_map = {
-            'wrist': vision.HandLandmark.WRIST,
-            'thumb_cmc': vision.HandLandmark.THUMB_CMC,
-            'thumb_mcp': vision.HandLandmark.THUMB_MCP,
-            'thumb_ip': vision.HandLandmark.THUMB_IP,
-            'thumb_tip': vision.HandLandmark.THUMB_TIP,
-            'index_finger_mcp': vision.HandLandmark.INDEX_FINGER_MCP,
-            'index_finger_pip': vision.HandLandmark.INDEX_FINGER_PIP,
-            'index_finger_dip': vision.HandLandmark.INDEX_FINGER_DIP,
-            'index_finger_tip': vision.HandLandmark.INDEX_FINGER_TIP,
-            'middle_finger_mcp': vision.HandLandmark.MIDDLE_FINGER_MCP,
-            'middle_finger_pip': vision.HandLandmark.MIDDLE_FINGER_PIP,
-            'middle_finger_dip': vision.HandLandmark.MIDDLE_FINGER_DIP,
-            'middle_finger_tip': vision.HandLandmark.MIDDLE_FINGER_TIP,
-            'ring_finger_mcp': vision.HandLandmark.RING_FINGER_MCP,
-            'ring_finger_pip': vision.HandLandmark.RING_FINGER_PIP,
-            'ring_finger_dip': vision.HandLandmark.RING_FINGER_DIP,
-            'ring_finger_tip': vision.HandLandmark.RING_FINGER_TIP,
-            'pinky_mcp': vision.HandLandmark.PINKY_MCP,
-            'pinky_pip': vision.HandLandmark.PINKY_PIP,
-            'pinky_dip': vision.HandLandmark.PINKY_DIP,
-            'pinky_tip': vision.HandLandmark.PINKY_TIP
+            'wrist': 0,
+            'thumb_cmc': 1,
+            'thumb_mcp': 2,
+            'thumb_ip': 3,
+            'thumb_tip': 4,
+            'index_finger_mcp': 5,
+            'index_finger_pip': 6,
+            'index_finger_dip': 7,
+            'index_finger_tip': 8,
+            'middle_finger_mcp': 9,
+            'middle_finger_pip': 10,
+            'middle_finger_dip': 11,
+            'middle_finger_tip': 12,
+            'ring_finger_mcp': 13,
+            'ring_finger_pip': 14,
+            'ring_finger_dip': 15,
+            'ring_finger_tip': 16,
+            'pinky_mcp': 17,
+            'pinky_pip': 18,
+            'pinky_dip': 19,
+            'pinky_tip': 20
             }
-
-
 
         landmark = landmarks[joint_index_map[joint]]
 
         return landmark.x, landmark.y
-
-    ### Example for defining a function that extracts an angle
-    def extract_hip_angle(self, landmarks):
-        """
-                Extracts the hip angle.
-
-                Parameters:
-                - landmarks: The list of pose landmarks from MediaPipe
-
-                Returns:
-                - An angle in degrees for the hip
-                """
-        # extract the x and y coordinates
-        left_hip = [landmarks[vision.PoseLandmark.LEFT_HIP].x, landmarks[vision.PoseLandmark.LEFT_HIP].y]
-        left_shoulder = [landmarks[vision.PoseLandmark.LEFT_SHOULDER].x, landmarks[vision.PoseLandmark.LEFT_SHOULDER].y]
-        left_knee = [landmarks[vision.PoseLandmark.LEFT_KNEE].x, landmarks[vision.PoseLandmark.LEFT_KNEE].y]
-        return self.calculate_angle(left_shoulder, left_hip, left_knee)
-
-    # Extracts the angle of the knee by measuring the angle between the left hip, left knee, and left ankle
-    def extract_knee_angle(self, landmarks):
-        # extract the x and y coordinates
-        left_hip = [landmarks[vision.PoseLandmark.LEFT_HIP].x, landmarks[vision.PoseLandmark.LEFT_HIP].y]
-        left_knee = [landmarks[vision.PoseLandmark.LEFT_KNEE].x, landmarks[vision.PoseLandmark.LEFT_KNEE].y]
-        left_ankle = [landmarks[vision.PoseLandmark.LEFT_ANKLE].x, landmarks[vision.PoseLandmark.LEFT_ANKLE].y]
-        return self.calculate_angle(left_hip, left_knee, left_ankle)

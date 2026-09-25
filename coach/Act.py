@@ -25,7 +25,6 @@ class Act:
         :param decision: The decision in which state the user is from the think component.
         :param frame: The currently processed frame form the webcam.
         :param joints: The joints extracted from mediapipe from the current frame.
-        :param elbow_angle_mvg: The moving average from the left elbow angle.
 
         """
 
@@ -44,11 +43,16 @@ class Act:
         font_color = (0, 0, 0)  # White color in BGR
         thickness = 2
 
+        if decision == "squish":
+            text = "Keep Squishing!"
+        elif decision == "stretch":
+            text = "Keep Stretching!"
+
         # Define the position for the number and text
         text_position = (50, 50)
 
         # Draw the text on the image
-        cv2.putText(frame, "myre", text_position, font, font_scale, font_color, thickness)
+        cv2.putText(frame, text, text_position, font, font_scale, font_color, thickness)
 
         # Display the frame (for debugging purposes)
         cv2.imshow('Sport Coaching Program', frame)
